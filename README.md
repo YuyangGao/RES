@@ -77,7 +77,7 @@ Where to look for the results:
 2. For the requested data, please find the 'data.csv' in the root dir
 3. Explanation visualization can be find in 'attention' folder
 
-Below are some sample explanations comparsion of RES and other methods. The model-generated explanations are represented by the heatmaps overlaid on the original image samples, where more importance is given to the area with a warmer color.
+Below are some sample explanations visualization results on RES and other comparison methods. The model-generated explanations are represented by the heatmaps overlaid on the original image samples, where more importance is given to the area with a warmer color.
 
 <img src="https://github.com/YuyangGao/RES/blob/main/example_figs/Fig2_re.png" alt="drawing" width="1500"/>
 
