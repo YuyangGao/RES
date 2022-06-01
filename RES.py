@@ -479,14 +479,8 @@ class GradCam:
         elif norm == 'Sigmoid':
             cam = torch.sigmoid(cam)
         else:
-            # linear (the original way used by GRADIA)
             cam = cam - torch.min(cam)
             cam = cam / (torch.max(cam) + 1e-6)
-
-        # need further investment about whether to normalize by max during training
-        # cam = cam / (torch.max(cam) + 1e-6)
-
-        # cam = torch.sigmoid(10*(cam-0.5))
 
         return cam, output
 
@@ -498,7 +492,6 @@ class GradCam:
 
         if index == None:
             index = np.argmax(output.cpu().data.numpy())
-            # print('model is looking at class', index)
 
         one_hot = np.zeros((1, output.size()[-1]), dtype=np.float32)
         one_hot[0][index] = 1
@@ -527,8 +520,6 @@ class GradCam:
         cam = cam - np.min(cam)
         cam = cv2.resize(cam, input.shape[2:])
         cam = cam / (np.max(cam) + 1e-6)
-
-        # cam = 1 / (1 + np.exp(-10 * (cam - 0.5)))
 
         return cam
 
@@ -1056,7 +1047,6 @@ if __name__ == '__main__':
                       ', P:', test_precision, ', R:', test_recall, ', F1:', test_f1)
 
     elif args.evaluate:
-        # attention_shift_study(val_loader)
         model = torch.load(os.path.join(args.model_dir, args.model_name))
 
         # evaluate model on test set (set output_attention=true if you want to save the model generated attention)
