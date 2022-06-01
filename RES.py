@@ -12,7 +12,6 @@ import torch.nn.parallel
 import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 import torchvision.models as models
-from sklearn.metrics import roc_auc_score
 import random
 import math
 import shutil
@@ -127,7 +126,6 @@ def preprocess_image(img):
 def show_cam_on_image(img,mask,path,file_name):
     save_path = os.path.join(path, file_name)
     heatmap = cv2.applyColorMap(np.uint8(255 * mask), cv2.COLORMAP_JET)
-    # heatmap = cv2.cvtColor(heatmap, cv2.COLOR_BGR2RGB)
     heatmap = np.float32(heatmap) / 255
 
     if np.max(img) > 1:
@@ -546,7 +544,6 @@ def deprocess_image(img):
 
 
 def model_test(model, test_loader, output_attention=False, output_iou=False):
-    # print('start testing')
     # model.eval()
     iou = AverageMeter()
     exp_precision = AverageMeter()
@@ -592,12 +589,8 @@ def model_test(model, test_loader, output_attention=False, output_iou=False):
 
                 if output_iou and img_fn in path_to_attn:
                     item_att_binary = (mask > 0.5)
-                    # cv2.imwrite('model_att.png', np.uint8(255 * item_att_binary.astype(np.float)))
-
                     target_att = path_to_attn[img_fn]
                     target_att_binary = (target_att > 0)
-                    # cv2.imwrite('target_att.png', np.uint8(255 * target_att_binary.astype(np.float)))
-
                     single_iou = compute_iou(item_att_binary, target_att_binary)
                     iou.update(single_iou.item(), 1)
 
@@ -614,38 +607,9 @@ def model_test(model, test_loader, output_attention=False, output_iou=False):
     et = time.time()
     test_time = et - st
 
-    # misclassified_img = []
-    # # get misclassified img set
-    # for idx in range(len(misclassified)):
-    #     if y_true[idx] != y_pred[idx]:
-    #         _, img_path = os.path.split(misclassified[idx])
-    #         misclassified_img.append(img_path)
-
-    # save the filename as list
-    # with open('img_fns.json', 'w') as fp:
-    #     json.dump(img_fns, fp)
-    #
-    # with open('misclassified.json', 'w') as fp:
-    #     json.dump(misclassified_img, fp)
-    #
-    # with open('IOU.json', 'w') as fp:
-    #     json.dump(ious, fp)
-
     test_acc = accuracy(torch.cat(outputs_all, dim=0), torch.cat(targets_all))[0].cpu().detach()
-    y_true = torch.cat(targets_all).data.cpu().numpy()
-    y_pred = torch.cat(outputs_all).data.cpu().numpy()
-    test_auc = roc_auc_score(y_true, y_pred[:,1])
 
-    # requested by Steven
-    # check for img_fns(list), y_predict(ndarray), y_label(ndarray), y_pred(750, 2), ious{fn: iou}
-    with open('data.csv', 'w', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(['Image index', 'Model prediction', 'Ground truth', 'prediction probability', 'pixel-level attention reasonability'])
-        for img_fn, prediction, GT, prob in zip(img_fns, y_predict.tolist(), y_label.tolist(), y_pred.tolist()):
-            if img_fn in ious:
-                writer.writerow([img_fn, prediction, GT, prob, ious[img_fn]])
-
-    return test_acc, test_auc, iou.avg, exp_precision.avg, exp_recall.avg, exp_f1.avg
+    return test_acc, iou.avg, exp_precision.avg, exp_recall.avg, exp_f1.avg
 
 
 def BF_solver(X, Y):
@@ -698,13 +662,10 @@ def model_train_with_map(model, train_loader, val_loader, transforms = None, are
     attention_criterion = nn.L1Loss(reduction='none')
 
     optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
-    # optimizer = torch.optim.AdamW(model.parameters(), lr=0.0001)
 
-    best_val_iou = 0
     best_val_acc = 0
 
     # load grad_cam module
-    # grad_cam = GradCam(model=model, feature_module=model.layer4, target_layer_names=["1"], use_cuda=args.use_cuda)
     grad_cam = GradCam(model=model, feature_module=model.layer4, target_layer_names=["2"], use_cuda=args.use_cuda)
     for epoch in np.arange(args.n_epoch) + 1:
         # switch to train mode
@@ -720,8 +681,6 @@ def model_train_with_map(model, train_loader, val_loader, transforms = None, are
 
         for batch_idx, (inputs, targets, target_maps, target_maps_org, pred_weight, att_weight) in enumerate(train_loader):
             attention_loss = 0
-            pos_loss = 0
-            neg_loss = 0
             if args.use_cuda:
                 inputs, targets, target_maps, target_maps_org, pred_weight, att_weight = inputs.cuda(), targets.cuda(
                     non_blocking=True), target_maps.cuda(), target_maps_org.cuda(), pred_weight.cuda(), att_weight.cuda()
@@ -736,8 +695,6 @@ def model_train_with_map(model, train_loader, val_loader, transforms = None, are
                 if valid_weight > 0.0:
                     # get attention maps from grad-CAM
                     att_map, _ = grad_cam.get_attention_map(torch.unsqueeze(input, 0), target, norm = None)
-                    # print(att_map)
-                    # att_map = target_map
                     att_maps.append(att_map)
 
                     if transforms == 'Gaussian':
@@ -773,7 +730,6 @@ def model_train_with_map(model, train_loader, val_loader, transforms = None, are
                         H2 = torch.relu(model.imp_conv2(H1))
                         H3 = torch.relu(model.imp_conv3(H2))
                         H4 = torch.relu(model.imp_conv4(H3))
-                        # H5 = torch.relu(model.imp_conv5(H4))
                         H5 = model.imp_conv5(H4)
 
                         temp = torch.squeeze(H5)
@@ -789,7 +745,6 @@ def model_train_with_map(model, train_loader, val_loader, transforms = None, are
                         H2 = torch.relu(model.imp_conv2(H1))
                         H3 = torch.relu(model.imp_conv3(H2))
                         H4 = torch.relu(model.imp_conv4(H3))
-                        # H5 = torch.relu(model.imp_conv5(H4))
                         H5 = model.imp_conv5(H4)
 
                         temp = torch.squeeze(H5)
@@ -809,7 +764,6 @@ def model_train_with_map(model, train_loader, val_loader, transforms = None, are
                 att_maps = torch.stack(att_maps)
                 att_map_labels = torch.stack(att_map_labels)
 
-                ###################### ours #########################
                 if transforms == 'S1' or transforms == 'S2' or transforms == 'D1' or transforms == 'D2' or transforms == 'Gaussian':
                     # hard threshold solver for a
                     a = BF_solver(att_maps, att_map_labels)
@@ -823,7 +777,7 @@ def model_train_with_map(model, train_loader, val_loader, transforms = None, are
                     attention_loss += torch.relu(torch.mean(eff_loss) - eta)
                 else:
                     a = 0
-                ######################  DF #########################
+
                 if transforms == 'S1' or transforms == 'S2' or transforms == 'D1' or transforms == 'D2':
                     att_map_labels_trans = torch.stack(att_map_labels_trans)
                     tempD = attention_criterion(att_maps, att_map_labels_trans)
@@ -883,18 +837,12 @@ def model_train_with_map(model, train_loader, val_loader, transforms = None, are
                 img = np.float32(cv2.resize(img, (224, 224))) / 255
                 input = preprocess_image(img)
                 mask = grad_cam(input)
-                # show_cam_on_image(img, mask, 'attention', img_path)
 
                 if img_fn in path_to_attn:
                     item_att_binary = (mask > 0.5)
-                    # cv2.imwrite('model_att.png', np.uint8(255 * item_att_binary.astype(np.float)))
-
                     target_att = path_to_attn[img_fn]
                     target_att_binary = (target_att > 0)
-                    # cv2.imwrite('target_att.png', np.uint8(255 * target_att_binary.astype(np.float)))
-
                     single_iou = compute_iou(item_att_binary, target_att_binary)
-                    # print('iou:', single_iou)
                     iou.update(single_iou.item(), 1)
 
             outputs_all += [outputs]
@@ -1101,10 +1049,10 @@ if __name__ == '__main__':
         for (dirpath, dirnames, model_fns) in walk(args.model_dir):
             for model_fn in model_fns:
                 model = torch.load(os.path.join(dirpath, model_fn))
-                test_acc, test_auc, test_iou, test_precision, test_recall, test_f1 = model_test(model, test_loader,
+                test_acc, test_iou, test_precision, test_recall, test_f1 = model_test(model, test_loader,
                                                                                                 output_attention=True,
                                                                                                 output_iou=True)
-                print('Model:', model_fn, ', Acc:', test_acc, ', AUC:', test_auc, ', IOU:', test_iou,
+                print('Model:', model_fn, ', Acc:', test_acc, ', IOU:', test_iou,
                       ', P:', test_precision, ', R:', test_recall, ', F1:', test_f1)
 
     elif args.evaluate:
@@ -1112,8 +1060,8 @@ if __name__ == '__main__':
         model = torch.load(os.path.join(args.model_dir, args.model_name))
 
         # evaluate model on test set (set output_attention=true if you want to save the model generated attention)
-        test_acc, test_auc, test_iou, test_precision, test_recall, test_f1 = model_test(model, test_loader, output_attention=True, output_iou=True)
-        print('Finish Testing. Test Acc:', test_acc, ', Test AUC:', test_auc, ', Test IOU:', test_iou, ', Test Precision:', test_precision, ', Test Recall:', test_recall, ', Test F1:', test_f1)
+        test_acc, test_iou, test_precision, test_recall, test_f1 = model_test(model, test_loader, output_attention=True, output_iou=True)
+        print('Finish Testing. Test Acc:', test_acc, ', Test IOU:', test_iou, ', Test Precision:', test_precision, ', Test Recall:', test_recall, ', Test F1:', test_f1)
     else:
         if args.trainWithMap:
             # for ours
