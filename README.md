@@ -12,6 +12,7 @@ Python pakage requirement:
 - torchvision==0.6.0
 - opencv==4.5.0
 - numpy==1.16.5
+- pandas==1.1.3
 - sklearn
 
 For the full list of pakages and corresponding version, please refer to the 'conda_list.txt'
