@@ -19,15 +19,14 @@ For the full list of pakages and corresponding version, please refer to the 'con
 
 ## Data preparation
 
-1. Download the datasets as well as our human explanation labels from google drive at:
+1. Download the datasets as well as our human explanation labels via google drive links below:
 
 * Gender classification dataset: [https://drive.google.com/file/d/1Mt9k5Qfcp4tYqWuq7xWhf76QHLyYPDft/view?usp=sharing](https://drive.google.com/file/d/1Mt9k5Qfcp4tYqWuq7xWhf76QHLyYPDft/view?usp=sharing)
 * Scene Recognition dataset: [https://drive.google.com/file/d/1ULF6UAcg9Yvy3fa50dV8H4I9ZJFAW-SK/view?usp=sharing](https://drive.google.com/file/d/1ULF6UAcg9Yvy3fa50dV8H4I9ZJFAW-SK/view?usp=sharing)
 
-2. Extract the files and place them in 'gender_data/' and 'places/' for Gender classification and Scene Recognition dataset, respectively.
+2. Extract the files and place them in 'gender_data/' and 'places/' folders for the Gender classification and Scene Recognition dataset, respectively.
 
 The data in the folders are mostly self-explained by their names, but just to provide a bit more info here:
-
 *  **Train**: this folder contains our training set
 *  **Val**: this folder contains our validation set
 *  **Test** : this folder contains our test set
@@ -37,7 +36,7 @@ Notice that we only have partial annotation labels of the whole training set (ab
 
 For more information about the dataset or experiment setup, please refer to the experimental section in the paper.
 
-## Sample Training Scripts for Gender Classification dataset (i.e. using 100 random samples with human explanation labels)
+## Sample Training Scripts (using 100 random samples with human explanation labels)
 
 * Baseline:
 ```
@@ -64,7 +63,7 @@ python RES.py --train-batch 20 --test-batch 10 --n_epoch 50 --data_dir gender_da
 python RES.py --train-batch 20 --test-batch 10 --n_epoch 50 --data_dir gender_data --model_name RES-L --trainWithMap --eta 0.1 --fw_sample 50 --transforms S1 --random_seed 0
 ```
 
-## Testing
+## Sample Testing Scripts 
 
 e.g. test the performance of the 'baseline' model on test set:
 ```
@@ -74,9 +73,8 @@ python RES.py --train-batch 100 --test-batch 10 -e --model_name baseline
 ## Result Validation
 
 Where to look for the results:
-1. The overall model performance can be find directly in the program output in Console
-2. For the requested data, please find the 'data.csv' in the root dir
-3. Explanation visualization can be find in 'attention' folder
+* The overall model performance can be find directly in the program output in Console
+* Explanation visualization can be find in 'attention' folder
 
 Below are some sample explanations visualization results on RES and other comparison methods. The model-generated explanations are represented by the heatmaps overlaid on the original image samples, where more importance is given to the area with a warmer color.
 
