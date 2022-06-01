@@ -4,7 +4,7 @@ The Pytorch implementation of RES framework for KDD'22 paper: [RES: A Robust Fra
 ## Desciption
 This codebase proivdes the necessary running environment (including the human explanation label) to train and evaluate the proposed RES model on the BBBP molecular datasets. 
 
-## Running Environment:
+## Running Environment
 
 Python pakage requirement:
 - python==3.7.9
