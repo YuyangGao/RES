@@ -17,7 +17,7 @@ Python pakage requirement:
 
 For the full list of pakages and corresponding version, please refer to the 'conda_list.txt'
 
-## Data preparation & description
+## Data Preparation & Description
 
 1. Download the datasets as well as our human explanation labels via google drive links below:
 
