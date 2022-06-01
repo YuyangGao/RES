@@ -74,7 +74,7 @@ python RES.py --train-batch 100 --test-batch 10 -e --model_name baseline
 
 Where to look for the results:
 * The overall model performance can be find directly in the program output in Console
-* Explanation visualization can be find in 'attention' folder
+* Explanation visualization can be find in 'attention/' folder
 
 Below are some sample explanations visualization results on RES and other comparison methods. The model-generated explanations are represented by the heatmaps overlaid on the original image samples, where more importance is given to the area with a warmer color.
 
