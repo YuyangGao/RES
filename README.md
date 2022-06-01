@@ -1,4 +1,4 @@
-# RES
+# RES: A Robust Framework for Guiding Visual Explanation
 RES implementation in Pytorch for KDD'22 paper : 'RES: A Robust Framework for Guiding Visual Explanation'
 
 ## Desciption
