@@ -27,10 +27,10 @@ For the full list of pakages and corresponding version, please refer to the 'con
 
 The data in the folders are mostly self-explained by their names, but just to provide a bit more info here:
 
-‘Train’: this folder contains our training set
-‘Val’ : this folder contains our validation set
-‘Test’ : this folder contains our test set
-‘attention_label’ : this folder contains all the explanation ground truth stored in csv format (which should be easily interpretable by any csv viewer). You might want to look for file name with ‘factual’, which stores the positive explanation maps of samples where value 1 refers to the corresponding pixel the annotators think should be included in the model explanation. The other set of files with name ‘counterfactual’ stores the negative explanation maps where value 1 indicates the corresponding pixel the annotators are certain that it must be excluded in the explanation.
+*  **Train**: this folder contains our training set
+*  **Val**: this folder contains our validation set
+*  **Test** : this folder contains our test set
+*  **attention_label** : this folder contains all the explanation ground truth stored in csv format (which should be easily interpretable by any csv viewer). You might want to look for file name with ‘factual’, which stores the positive explanation maps of samples where value 1 refers to the corresponding pixel the annotators think should be included in the model explanation. The other set of files with name ‘counterfactual’ stores the negative explanation maps where value 1 indicates the corresponding pixel the annotators are certain that it must be excluded in the explanation.
 
 Notice that we only have partial annotation labels of the whole training set (about 20%), and in fact we did not use all the data in this folder to perform training in our work. Basically you can easily extract your own training set from the current ‘train’ folder to only consider those samples that appear in ‘attention_label’ folder if you want a fully annotated training set.
 
