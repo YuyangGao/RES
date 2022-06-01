@@ -1,5 +1,5 @@
 # RES: A Robust Framework for Guiding Visual Explanation
-RES implementation in Pytorch for KDD'22 paper : 'RES: A Robust Framework for Guiding Visual Explanation'
+The Pytorch implementation of RES framework for KDD'22 paper: 'RES: A Robust Framework for Guiding Visual Explanation'
 
 ## Desciption
 This codebase proivdes the necessary running environment (including the human explanation label) to train and evaluate the proposed RES model on the BBBP molecular datasets. 
