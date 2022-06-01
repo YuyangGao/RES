@@ -38,17 +38,17 @@ For more information about the dataset or experiment setup, please refer to the 
 
 ## Sample Training Scripts (using 100 random samples with human explanation labels)
 
-* Baseline:
+* Baseline (Plain training without using human explanation labels):
 ```
 python RES.py --train-batch 20 --test-batch 10 --n_epoch 50 --data_dir gender_data --model_name baseline --fw_sample 50 --random_seed 0
 ```
 
-* GRADIA:
+* [GRADIA](https://arxiv.org/abs/2202.02838):
 ```
 python RES.py --train-batch 20 --test-batch 10 --n_epoch 50 --data_dir gender_data --model_name GRADIA --trainWithMap --fw_sample 50 --random_seed 0
 ```
 
-* HAICS:
+* [HAICS](https://dl.acm.org/doi/abs/10.1145/3411763.3451798?casa_token=5O_HXD2BUQIAAAAA:05WlihsPAj0T44FODl6y8OAKnjAn5lbELTZ1Gypn8DRX-T2KVaicConf8cEWiRYV2Ao7Z1O0ns8_):
 ```
 python RES.py --train-batch 20 --test-batch 10 --n_epoch 50 --data_dir gender_data --model_name HAICS --trainWithMap --fw_sample 50 --transforms HAICS --random_seed 0
 ```
