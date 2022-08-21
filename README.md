@@ -88,7 +88,7 @@ And if you find this repo useful in your research, please consider cite our pape
 
     @InProceedings{gao2022res,
     title={RES: A Robust Framework for Guiding Visual Explanation},
-    author={Gao, Yuyang and Sun, Tong and Bai, Guangji and Gu, Siyi and Hong, Sungsoo and Zhao, Liang},
+    author={Gao, Yuyang and Sun, Tong Steven and Bai, Guangji and Gu, Siyi and Hong, Sungsoo Ray and Zhao, Liang},
     booktitle={Proceedings of the 28th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining},
     month = {August},
     year = {2022},
